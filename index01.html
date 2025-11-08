@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西宁市第二中学物理实验智慧学习平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        .school-badge {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            line-height: 1.3;
+        }
+        
+        .platform-title {
+            color: var(--secondary);
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: inline-block;
+            padding: 0 8px;
+            line-height: 1.3;
+        }
+        
+        .platform-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .notice {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
+            padding: 18px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .bilibili-notice {
+            background: linear-gradient(to right, #fff3cd, #ffeaa7);
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin: 0 0 18px;
+            border-left: 4px solid #fb7299;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        }
+        
+        .notice h3 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+        }
+        
+        .notice p {
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.5;
+        }
+        
+        .experiments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        
+        .experiment-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .experiment-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        .experiment-icon {
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+        }
+        
+        .card-body {
+            padding: 22px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-body h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            min-height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .experiment-1 h3 {
+            font-size: clamp(1.1rem, 2.8vw, 1.25rem);
+            line-height: 1.4;
+        }
+        
+        .card-body p {
+            color: var(--dark);
+            margin-bottom: 18px;
+            line-height: 1.6;
+            flex-grow: 1;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+        
+        .card-footer {
+            padding: 0 22px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            text-align: center;
+            min-height: 48px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 12px rgba(26, 42, 108, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(26, 42, 108, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-disabled {
+            background: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .btn-disabled:hover {
+            transform: none;
+            box-shadow: none;
+            background: #cccccc;
+            color: #666666;
+        }
+        
+        .ai-feature {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            padding: 25px 20px;
+            margin-top: 35px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        .ai-feature h2 {
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            line-height: 1.3;
+        }
+        
+        .ai-feature p {
+            color: var(--dark);
+            margin-bottom: 22px;
+            font-size: clamp(1rem, 2.8vw, 1.1rem);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .ai-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 18px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: white;
+            font-size: clamp(0.85rem, 2.5vw, 1rem);
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        
+        .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* 平板设备优化 */
+        @media (max-width: 1024px) {
+            body {
+                padding: 12px;
+            }
+            
+            header {
+                padding: 22px 18px;
+                margin-bottom: 25px;
+            }
+            
+            .experiments-grid {
+                gap: 20px;
+            }
+        }
+        
+        /* 手机设备优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+                border-radius: 15px;
+            }
+            
+            .school-badge {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+            
+            .notice, .bilibili-notice {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .experiments-grid {
+                gap: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .experiment-card {
+                border-radius: 15px;
+            }
+            
+            .card-body {
+                padding: 18px;
+            }
+            
+            .card-footer {
+                padding: 0 18px 18px;
+            }
+            
+            .btn {
+                padding: 10px 16px;
+                min-height: 44px;
+            }
+            
+            .ai-feature {
+                padding: 20px 15px;
+                margin-top: 25px;
+                border-radius: 15px;
+            }
+            
+            footer {
+                margin-top: 30px;
+                padding: 15px;
+            }
+        }
+        
+        /* 小屏手机优化 */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            
+            header {
+                padding: 18px 12px;
+                border-radius: 12px;
+            }
+            
+            .school-badge {
+                width: 60px;
+                height: 60px;
+                font-size: 1.6rem;
+            }
+            
+            .notice, .bilibili-notice {
+                padding: 12px;
+                border-radius: 10px;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+            
+            .card-footer {
+                padding: 0 15px 15px;
+                gap: 10px;
+            }
+            
+            .btn {
+                padding: 10px 14px;
+                min-height: 42px;
+            }
+            
+            .ai-feature {
+                padding: 18px 12px;
+                border-radius: 12px;
+            }
+        }
+        
+        /* 超小屏设备优化 */
+        @media (max-width: 360px) {
+            .experiments-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-footer {
+                flex-direction: column;
+            }
+        }
+        
+        /* 横屏手机优化 */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 8px;
+            }
+            
+            header {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .school-badge {
+                width: 50px;
+                height: 50px;
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="school-badge">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1>西宁市第二中学2025学业水平合格性考试</h1>
+            <div class="platform-title">物理实验操作测试智慧学习平台</div>
+            
+            <div class="notice">
+                <h3><i class="fas fa-lightbulb"></i> 学习建议</h3>
+                <p>1. 建议同学们先完整观看该系列视频，掌握实验操作的整体流程和要点。</p>
+                <p>2. 如果对某个实验的某些方面有疑虑，可以点击相应链接进入特定视频的AI问答界面，获取精准解答。</p>
+            </div>
+            
+            <!-- 将B站提示移动到学习建议下方 -->
+            <div class="bilibili-notice">
+                <i class="fab fa-bilibili"></i> 为获得最佳观看体验，使用该平台时建议登录B站，并关注本账号，第一时间获取高中物理真实的实验体验。
+            </div>
+        </header>
+        
+        <main>
+            <div class="experiments-grid">
+                <!-- 实验1 -->
+                <div class="experiment-card experiment-1">
+                    <div class="card-header">
+                        <div class="experiment-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <h2>实验一</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3>探究弹簧弹力与形变量的关系</h3>
+                        <p>掌握胡克定律的应用，学习数据处理和图像分析方法。</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://www.bilibili.com/video/BV1yVyeBmEES/?spm_id_from=333.1387.homepage.video_card.click&vd_source=441283cfd6372f4afbde674c0b735e0f" class="btn btn-primary" target="_blank">
+                            <i class="fas fa-play-circle"></i> 观看完整视频
+                        </a>
+                        <a href="ai-question01-answer.html" class="btn btn-secondary">
+                            <i class="fas fa-robot"></i> 进入AI问答
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 实验2 -->
+                <div class="experiment-card">
+                    <div class="card-header">
+                        <div class="experiment-icon">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <h2>实验二</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3>验证机械能守恒定律</h3>
+                        <p>通过自由落体运动验证机械能守恒定律，掌握实验操作和数据处理方法。</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://www.bilibili.com/video/BV1E61NB8Eyy/?spm_id_from=333.1387.homepage.video_card.click&vd_source=441283cfd6372f4afbde674c0b735e0f" class="btn btn-primary" target="_blank">
+                            <i class="fas fa-play-circle"></i> 观看完整视频
+                        </a>
+                        <a href="ai-question02-answer.html" class="btn btn-secondary">
+                            <i class="fas fa-robot"></i> 进入AI问答
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 实验3 -->
+                <div class="experiment-card">
+                    <div class="status-badge">制作中</div>
+                    <div class="card-header">
+                        <div class="experiment-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h2>实验三</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3>练习使用多用电表</h3>
+                        <p>学习多用电表的使用方法，掌握测量电阻、电压和电流的技能。</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-disabled">
+                            <i class="fas fa-play-circle"></i> 视频制作中
+                        </a>
+                        <a href="#" class="btn btn-disabled">
+                            <i class="fas fa-robot"></i> 敬请期待
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 实验4 -->
+                <div class="experiment-card">
+                    <div class="card-header">
+                        <div class="experiment-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h2>实验四</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3>电池电动势和内阻的测量</h3>
+                        <p>学习使用伏安法和图像法测量电池的电动势和内阻，掌握电路连接和数据处理方法。</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="https://www.bilibili.com/video/BV1Hi1NBAEWm/?spm_id_from=333.1387.homepage.video_card.click&vd_source=441283cfd6372f4afbde674c0b735e0f" class="btn btn-primary" target="_blank">
+                            <i class="fas fa-play-circle"></i> 观看完整视频
+                        </a>
+                        <a href="ai-question04-answer.html" class="btn btn-secondary">
+                            <i class="fas fa-robot"></i> 进入AI问答
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ai-feature">
+                <div class="ai-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h2>西宁二中物理实验AI学习助手</h2>
+                <p>我们的AI问答系统能够精准定位视频片段，快速解答您在实验操作中的疑问。只需输入您的问题，系统将智能匹配相关视频内容，提供详细解答。</p>
+            </div>
+        </main>
+        
+        <footer>
+            <p>西宁市第二中学科教中心 &copy; 2025 | 学业水平合格性考试物理实验操作测试智慧学习平台</p>
+        </footer>
+    </div>
+
+    <script>
+        // 添加卡片悬停效果增强
+        document.querySelectorAll('.experiment-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // 为按钮添加点击效果
+        document.querySelectorAll('.btn:not(.btn-disabled)').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+        
+        // 修改视频链接，确保从00:00开始播放
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoLinks = document.querySelectorAll('a[href*="bilibili.com"]');
+            
+            videoLinks.forEach(link => {
+                let baseUrl = link.href.split('?')[0];
+                let params = new URLSearchParams(link.href.split('?')[1] || '');
+                
+                params.delete('t');
+                params.delete('start');
+                params.set('t', '0');
+                
+                link.href = baseUrl + '?' + params.toString();
+            });
+        });
+    </script>
+</body>
+</html>
