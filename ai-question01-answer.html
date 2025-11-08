@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二中物理实验AI系统 - 探究弹簧的弹力与形变量的关系</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 样式保持不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 12px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 22px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 50%;
+            left: 18px;
+            transform: translateY(-50%);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 10px 16px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            z-index: 100;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .back-home:hover {
+            transform: translateY(-50%) translateX(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: clamp(1.6rem, 5vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        .experiment-title {
+            color: var(--secondary);
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            padding: 0 8px;
+            line-height: 1.3;
+        }
+        
+        .experiment-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-section {
+            flex: 1;
+            min-width: min(100%, 320px);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 22px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .results-section {
+            flex: 2;
+            min-width: min(100%, 600px);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 22px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .search-box {
+            margin-bottom: 22px;
+        }
+        
+        .search-box h2 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .search-button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            font-weight: bold;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 12px;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        }
+        
+        .ai-status {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            color: #666;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .ai-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .ai-indicator .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #28a745;
+            margin-right: 4px;
+            animation: pulse 2s infinite;
+        }
+        
+        .example-questions {
+            margin-top: 22px;
+        }
+        
+        .example-questions h3 {
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+        }
+        
+        .example-list {
+            list-style-type: none;
+        }
+        
+        .example-list li {
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .example-list li:hover {
+            background: #e9ecef;
+        }
+        
+        .result-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px;
+            background: white;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .result-header h3 {
+            color: var(--primary);
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+        }
+        
+        .play-button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            text-decoration: none;
+            min-height: 36px;
+        }
+        
+        .play-button:hover {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+        }
+        
+        .result-content {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+        
+        .result-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .keyword {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            color: #555;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 18px;
+            color: #666;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .match-score {
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+        }
+        
+        .match-info {
+            background: #f8f9fa;
+            padding: 14px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+        
+        .match-details {
+            margin-top: 6px;
+            color: #555;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 18px;
+            color: white;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 500;
+        }
+        
+        .question-type {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            margin-left: 6px;
+        }
+        
+        .bilibili-notice {
+            background: linear-gradient(to right, #fff3cd, #ffeaa7);
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #fb7299;
+        }
+        
+        .bilibili-notice i {
+            color: #fb7299;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: clamp(25px, 6vw, 30px);
+            height: clamp(25px, 6vw, 30px);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 视频播放器样式 */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .close-video {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-frame {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 宽高比 */
+            position: relative;
+        }
+        
+        .video-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 临时音量提示样式 */
+        .volume-notice {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .volume-notice.show {
+            opacity: 1;
+        }
+
+        /* 平板设备优化 */
+        @media (max-width: 1024px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px 16px;
+                margin-bottom: 20px;
+            }
+            
+            .main-content {
+                gap: 15px;
+            }
+        }
+        
+        /* 手机设备优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+            
+            header {
+                padding: 18px 14px;
+                margin-bottom: 18px;
+                border-radius: 15px;
+                text-align: left;
+            }
+            
+            .back-home {
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                margin-bottom: 12px;
+                align-self: flex-start;
+                width: fit-content;
+            }
+            
+            h1 {
+                text-align: center;
+            }
+            
+            .experiment-title {
+                text-align: center;
+                width: 100%;
+            }
+            
+            .main-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-section, .results-section {
+                padding: 18px;
+                border-radius: 15px;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .play-button {
+                align-self: stretch;
+                justify-content: center;
+            }
+            
+            .volume-notice {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+        
+        /* 小屏手机优化 */
+        @media (max-width: 480px) {
+            body {
+                padding: 6px;
+            }
+            
+            header {
+                padding: 16px 12px;
+                border-radius: 12px;
+            }
+            
+            .search-section, .results-section {
+                padding: 16px;
+                border-radius: 12px;
+            }
+            
+            .example-list li {
+                padding: 10px 12px;
+            }
+            
+            .result-item {
+                padding: 16px;
+                border-radius: 10px;
+            }
+            
+            .bilibili-notice {
+                padding: 12px 16px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="#" class="back-home" onclick="returnToHomepage()">
+                <i class="fas fa-home"></i> 返回主页
+            </a>
+            
+            <h1>二中物理实验AI系统</h1>
+            <div class="experiment-title">探究弹簧的弹力与形变量的关系</div>
+        </header>
+        
+        <div class="main-content">
+            <section class="search-section">
+                <div class="search-box">
+                    <h2>请输入您的问题</h2>
+                    <input type="text" id="question" placeholder="例如：如何搭建实验装置？">
+                    <button class="search-button" onclick="searchVideo()">
+                        <i class="fas fa-search"></i> AI搜索视频片段
+                    </button>
+                    <div class="ai-status">
+                        <span class="ai-indicator"><span class="dot"></span>语义理解匹配</span>
+                        <span id="match-method">智能语义分析</span>
+                    </div>
+                </div>
+                
+                <div class="example-questions">
+                    <h3>常见问题示例</h3>
+                    <ul class="example-list">
+                        <li onclick="fillQuestion('如何使用图像法处理实验数据？')">如何使用图像法处理实验数据？</li>
+                        <li onclick="fillQuestion('如何搭建实验装置？')">如何搭建实验装置？</li>
+                        <li onclick="fillQuestion('怎样测量弹簧初始长度？')">怎样测量弹簧初始长度？</li>
+                        <li onclick="fillQuestion('怎样记录数据？')">怎样记录数据？</li>
+                        <li onclick="fillQuestion('观察图像的规律？')">观察图像的规律？</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="results-section">
+                <h2>搜索结果</h2>
+                
+                <div class="bilibili-notice">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>观看提示：</strong> 
+                        为获得最佳观看体验，使用该平台时建议登录B站，并关注本账号，第一时间获取高中物理真实的实验体验。电脑端视频默认为静音，请点击视频右下角音量按钮，解除静音。
+                    </div>
+                </div>
+                
+                <div id="results">
+                    <div class="no-results">
+                        <i class="fas fa-info-circle" style="font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; color: var(--primary);"></i>
+                        <p>请输入您关于实验的问题，AI将为您匹配相关视频片段</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>西宁市第二中学科教中心 © 2025</p>
+        </footer>
+    </div>
+    
+    <!-- 视频播放器模态框 -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <button class="close-video" onclick="closeVideo()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="volume-notice" id="volumeNotice">
+                <i class="fas fa-volume-up"></i>
+                如果视频没有声音，请点击视频右下角的音量按钮
+            </div>
+            <div class="video-frame" id="videoFrame">
+                <!-- 视频将在这里动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 视频片段数据库 - 根据新的胡克定律实验数据
+        const videoSegments = [
+            {
+                id: "A-1",
+                time: "00:24",
+                step: "情景导入",
+                keyPoints: "通过拉力器健身的例子，引出弹簧'伸的越长，力气越大'的生活经验，激发学生兴趣。",
+                keywords: ["拉力器", "健身", "生活经验", "弹簧", "伸长", "力气", "关系", "弹簧拉力器", "体能训练", "生活实例", "直观感受", "拉力变化", "拉伸长度", "用力大小", "日常现象", "引入话题", "启发思考"],
+                timeInSeconds: 24
+            },
+            {
+                id: "A-2",
+                time: "00:36",
+                step: "提出问题",
+                keyPoints: "明确提出：'弹簧伸长的长度和弹簧的弹力到底有什么样的关系？'引导思考实验目的。",
+                keywords: ["弹簧", "伸长长度", "弹力", "关系", "探究什么", "为什么做实验", "研究问题", "核心问题", "实验动机", "定量关系", "物理规律", "因果关系", "科学疑问", "引导探究", "本节课核心", "待解决问题"],
+                timeInSeconds: 36
+            },
+            {
+                id: "A-3",
+                time: "00:43",
+                step: "实验目的",
+                keyPoints: "屏幕展示或口播：'探究弹簧的弹力与形变量的关系'，明确实验目标。",
+                keywords: ["实验目的", "实验目标", "本实验任务", "要验证什么", "最终目标", "学习目标", "探究目标", "实验宗旨", "为什么做", "实验意图", "课程要求"],
+                timeInSeconds: 43
+            },
+            {
+                id: "A-4",
+                time: "00:49",
+                step: "实验原理",
+                keyPoints: "在弹簧下端挂槽码，测量弹力F和弹簧伸长量x；逐个增加槽码，重复实验；用描点法绘制F-x图像，分析图像得出结论。",
+                keywords: ["实验原理", "槽码", "弹力F", "伸长量x", "描点法", "F-x图像", "工作原理", "理论依据", "操作方法", "悬挂重量", "形变量", "数据处理方法", "图像法", "探究方法", "如何得出结论", "因变量与自变量"],
+                timeInSeconds: 49
+            },
+            {
+                id: "A-5",
+                time: "01:18",
+                step: "清点器材",
+                keyPoints: "实验前清点器材：铁架台、刻度尺、燕尾夹、带指针的弹簧、金属槽码或钩码；清点结束举手示意，老师同意后开始实验。",
+                keywords: ["实验器材", "有哪些", "铁架台", "刻度尺", "燕尾夹", "弹簧", "钩码", "仪器清单", "所需工具", "实验设备", "材料准备", "弹簧测力计替代", "砝码", "实验前准备", "器材检查", "实验室用品", "开始实验前步骤"],
+                timeInSeconds: 78
+            },
+            {
+                id: "B-1",
+                time: "01:40",
+                step: "搭建装置",
+                keyPoints: "将刻度尺用燕尾夹固定在铁架台上；把弹簧挂在铁架台上，完成基本装置搭建。",
+                keywords: ["如何搭建", "怎么装", "安装", "固定刻度尺", "挂弹簧", "燕尾夹用法", "实验装置组装", "搭建步骤", "仪器安装", "固定方法", "弹簧悬挂", "基础框架", "第一步操作", "实验 setup", "装置示意图", "连接部件"],
+                timeInSeconds: 100
+            },
+            {
+                id: "B-2",
+                time: "01:58",
+                step: "调整装置",
+                keyPoints: "调整刻度尺和弹簧位置，使弹簧指针尽可能靠近刻度尺，以减小读取数据的误差。",
+                keywords: ["调整", "靠近", "减小误差", "为什么靠近", "仪器校准", "位置调整", "提高精度", "读数准确", "避免视差", "指针对齐", "优化装置", "为什么这么做", "关键技巧", "实验注意事项"],
+                timeInSeconds: 118
+            },
+            {
+                id: "B-3",
+                time: "02:08",
+                step: "测量初始长度 (L0)",
+                keyPoints: "弹簧指针静止后，使视角与弹簧指针保持同一高度，读取初始示数（示例：L0=15.75厘米）。",
+                keywords: ["初始长度", "15.75cm", "不挂钩码", "怎么读数", "视角", "视线", "初始示数", "原长", "弹簧自然长度", "零点读数", "起点刻度", "读数规范", "视线水平", "避免误差", "第一步测量", "L0怎么读", "基准值"],
+                timeInSeconds: 128
+            },
+            {
+                id: "B-4",
+                time: "02:20",
+                step: "进行第一次测量",
+                keyPoints: "挂上第一个50克钩码；用手轻扶弹簧，使其尽快保持静止，便于读取数据。",
+                keywords: ["挂钩码", "挂第一个", "50克", "手轻扶", "怎么挂", "静止", "首次加载", "施加外力", "添加重量", "稳定技巧", "防止振荡", "如何让弹簧稳定", "初始弹力测量", "实验操作技巧", "第一步加载", "50克砝码"],
+                timeInSeconds: 140
+            },
+            {
+                id: "B-5",
+                time: "02:30",
+                step: "记录第一组数据",
+                keyPoints: "根据二力平衡，弹力等于钩码重力，F1=0.50牛；读取指针示数L1=17.25厘米；计算伸长量x1=L1-L0=1.50厘米。",
+                keywords: ["第一个数据", "弹力怎么算", "F1=重力", "伸长量怎么算", "x1=L1-L0", "数据记录", "第一次读数", "弹力计算", "重力计算", "形变量计算", "差值法", "数据表格填写", "二力平衡应用", "0.5N", "1.5cm伸长", "记录数据", "数据填入", "数据填入表格"],
+                timeInSeconds: 150
+            },
+            {
+                id: "B-6",
+                time: "02:51",
+                step: "重复实验",
+                keyPoints: "继续挂上第二个50克钩码，总弹力F2=1牛；读取示数L2=18.60厘米，计算伸长量x2=2.85厘米；增加同样钩码，重复过程，将数据填入表格。",
+                keywords: ["第二个钩码", "1牛", "重复实验", "增加钩码", "填表格", "记录数据", "多次测量", "数据收集", "过程重复", "增加负载", "总重力", "累计弹力", "逐次加载", "完整数据表", "实验重复性", "获取多组数据"],
+                timeInSeconds: 171
+            },
+            {
+                id: "C-1",
+                time: "03:12",
+                step: "建立坐标系",
+                keyPoints: "图像法处理实验数据，以弹力F为纵坐标，以弹簧的伸长量x为横坐标，准备绘制图像。",
+                keywords: ["F-x图像", "怎么画图", "图像法", "图像法处理数据", "坐标轴", "纵坐标", "横坐标", "F轴", "x轴", "绘制图像准备", "建立坐标", "选择坐标轴", "因变量自变量", "画图第一步", "图像框架", "物理图像绘制", "坐标系设定", "标度选择", "描点前准备"],
+                timeInSeconds: 192
+            },
+            {
+                id: "C-2",
+                time: "03:17",
+                step: "描点作图",
+                keyPoints: "在坐标系中使用描点法作图，将实验数据点绘制在图上。",
+                keywords: ["描点法", "怎么描点", "画图", "数据点绘制", "描点步骤", "图像绘制方法", "将数据转化为图像", "在图上标点", "连线前步骤", "可视化数据", "作图技巧", "手绘图像", "实验点"],
+                timeInSeconds: 197
+            },
+            {
+                id: "C-3",
+                time: "03:19",
+                step: "分析图像",
+                keyPoints: "连接各点，得出弹力F随弹簧伸长量x变化的图像；分析图像得出弹力F与弹簧伸长量x成正比。",
+                keywords: ["数据处理", "数据分析", "分析图像", "连线", "图像是什么", "正比关系", "F和x的关系", "图像分析", "得出结论", "线性关系", "过原点的直线", "正比规律", "图像形状", "物理意义", "数据拟合", "规律总结", "从图像看关系"],
+                timeInSeconds: 199
+            },
+            {
+                id: "C-4",
+                time: "03:26",
+                step: "得出结论 (胡克定律)",
+                keyPoints: "观察图像的规律，总结胡克定律：弹簧发生弹性形变时，弹力F跟伸长或缩短的长度x成正比，即F=kx。",
+                keywords: ["实验结论", "胡克定律", "F=kx", "弹性形变", "最终结论", "物理定律", "弹性限度内", "胡克定律内容", "数学表达式", "定律总结", "核心规律", "实验验证的定律", "弹簧行为规律", "经典力学定律", "图像的规律"],
+                timeInSeconds: 206
+            },
+            {
+                id: "C-5",
+                time: "03:34",
+                step: "劲度系数 (k)",
+                keyPoints: "介绍k是弹簧的劲度系数，代表弹簧的软硬程度；如何求解k：k是F-x图像的斜率，k = ΔF / Δx。",
+                keywords: ["k是什么", "劲度系数", "怎么求k", "斜率", "软硬程度", "ΔF/Δx", "弹簧常数", "弹性系数", "k的物理意义", "求斜率方法", "计算k值", "单位N/m", "图像斜率含义", "弹簧硬度", "特性参数", "Delta F Delta x"],
+                timeInSeconds: 214
+            },
+            {
+                id: "C-6",
+                time: "03:57",
+                step: "实验结论",
+                keyPoints: "重申实验结论：弹簧发生弹性形变时，弹力F与伸长量x成正比，即F=kx（胡克定律）。",
+                keywords: ["实验结论", "胡克定律", "最终总结", "实验验证结果", "回顾结论", "本实验所得", "规律确认", "实验成功标志", "知识点总结", "内容回顾", "核心发现", "实验意义"],
+                timeInSeconds: 237
+            },
+            {
+                id: "C-7",
+                time: "04:19",
+                step: "整理仪器",
+                keyPoints: "实验结束，拆除实验装置，整理实验仪器，摆放整齐。",
+                keywords: ["实验结束", "整理仪器", "拆除", "实验收尾", "器材整理", "清理实验台", "仪器归位", "善后工作", "实验完成后步骤", "遵守实验室规则", "培养好习惯", "拆卸装置", "恢复原状"],
+                timeInSeconds: 259
+            }
+        ];
+
+        // 疑问词列表
+        const questionWords = ["如何", "怎样", "为什么", "是什么", "怎么", "何为", "为何", "怎么用", "如何使用", "怎样使用"];
+
+        // 语义映射表
+        const semanticMap = {
+            "图像法": ["F-x图像", "怎么画图", "图像法", "图像法处理数据", "描点法", "图像分析", "数据处理", "数据分析"],
+            "搭建装置": ["如何搭建", "怎么装", "安装", "固定刻度尺", "挂弹簧", "燕尾夹用法", "实验装置组装"],
+            "初始长度": ["初始长度", "L0", "不挂钩码", "怎么读数", "原长", "弹簧自然长度", "零点读数", "基准值"],
+            "记录数据": ["数据记录", "填表格", "记录数据", "数据填入", "数据填入表格", "第一个数据", "弹力怎么算", "伸长量怎么算"],
+            "图像规律": ["分析图像", "图像是什么", "正比关系", "F和x的关系", "图像分析", "得出结论", "线性关系", "过原点的直线", "正比规律"],
+            "实验目的": ["实验目的", "实验目标", "本实验任务", "要验证什么", "最终目标", "学习目标"],
+            "实验原理": ["实验原理", "槽码", "弹力F", "伸长量x", "描点法", "F-x图像", "工作原理", "理论依据"],
+            "器材": ["实验器材", "有哪些", "铁架台", "刻度尺", "燕尾夹", "弹簧", "钩码", "仪器清单"],
+            "实验结论": ["实验结论", "胡克定律", "最终总结", "实验验证结果", "回顾结论", "本实验所得"],
+            "整理仪器": ["实验结束", "整理仪器", "拆除", "实验收尾", "器材整理", "清理实验台"]
+        };
+
+        // 短语模式匹配
+        const phrasePatterns = {
+            "如何使用图像法处理实验数据": ["C-1", "C-2"],
+            "图像法处理实验数据": ["C-1", "C-2"],
+            "如何搭建实验装置": ["B-1"],
+            "搭建实验装置": ["B-1"],
+            "怎样测量弹簧初始长度": ["B-3"],
+            "测量弹簧初始长度": ["B-3"],
+            "怎样记录数据": ["B-5"],
+            "记录数据": ["B-5"],
+            "观察图像的规律": ["C-3", "C-4"],
+            "图像规律": ["C-3", "C-4"],
+            "实验目的是什么": ["A-3"],
+            "实验目的": ["A-3"],
+            "实验原理是什么": ["A-4"],
+            "实验原理": ["A-4"],
+            "劲度系数是什么": ["C-5"],
+            "劲度系数": ["C-5"],
+            "胡克定律": ["C-4", "C-6"]
+        };
+
+        // 生成随机字符串函数，用于防止浏览器缓存
+        function generateRandomString() {
+            return Math.random().toString(36).substring(2, 15);
+        }
+
+        // 计算提前1秒后的时间显示
+        function getAdjustedTimeDisplay(segment) {
+            const adjustedSeconds = Math.max(0, segment.timeInSeconds - 1);
+            const minutes = Math.floor(adjustedSeconds / 60);
+            const seconds = adjustedSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // 创建B站视频链接函数 - 添加提前1秒功能
+        function createBilibiliVideoUrl(segment) {
+            // 生成随机参数防止缓存
+            const randomParam = generateRandomString();
+            
+            // 使用提前1秒的时间点，确保时间不小于0
+            const adjustedTime = Math.max(0, segment.timeInSeconds - 1);
+            
+            return `https://www.bilibili.com/video/BV1yVyeBmEES?t=${adjustedTime}&high_quality=1&quality=80&muted=false&r=${randomParam}`;
+        }
+
+        // 创建嵌入视频URL函数 - 添加提前1秒功能
+        function createEmbedVideoUrl(segment) {
+            // 生成随机参数防止缓存
+            const randomParam = generateRandomString();
+            
+            // 使用提前1秒的时间点，确保时间不小于0
+            const adjustedTime = Math.max(0, segment.timeInSeconds - 1);
+            
+            return `https://player.bilibili.com/player.html?bvid=BV1yVyeBmEES&page=1&high_quality=1&danmaku=0&t=${adjustedTime}&autoplay=1&r=${randomParam}`;
+        }
+
+        // 播放视频函数
+        function playVideo(segment) {
+            const videoModal = document.getElementById('videoModal');
+            const videoFrame = document.getElementById('videoFrame');
+            const volumeNotice = document.getElementById('volumeNotice');
+            
+            // 创建嵌入视频URL
+            const embedUrl = createEmbedVideoUrl(segment);
+            
+            // 设置嵌入视频
+            videoFrame.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+            
+            // 显示视频模态框
+            videoModal.style.display = 'flex';
+            
+            // 短暂显示音量提示
+            showVolumeNotice();
+        }
+
+        // 显示音量提示（短暂显示后自动消失）
+        function showVolumeNotice() {
+            const notice = document.getElementById('volumeNotice');
+            notice.classList.add('show');
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                notice.classList.remove('show');
+            }, 3000);
+        }
+
+        // 关闭视频函数
+        function closeVideo() {
+            const videoModal = document.getElementById('videoModal');
+            const videoFrame = document.getElementById('videoFrame');
+            
+            // 隐藏视频模态框
+            videoModal.style.display = 'none';
+            
+            // 清空视频内容
+            videoFrame.innerHTML = '';
+        }
+
+        // 填充问题到输入框
+        function fillQuestion(question) {
+            document.getElementById('question').value = question;
+        }
+
+        // 返回主页
+        function returnToHomepage() {
+            window.location.href = './index.html';
+            return false;
+        }
+
+        // 检测问题类型
+        function detectQuestionType(question) {
+            for (const word of questionWords) {
+                if (question.includes(word)) {
+                    return { type: word, isQuestion: true };
+                }
+            }
+            return { type: "一般问题", isQuestion: false };
+        }
+
+        // 提取关键词
+        function extractKeywords(question) {
+            let cleanedQuestion = question;
+            for (const word of questionWords) {
+                cleanedQuestion = cleanedQuestion.replace(word, "");
+            }
+            return cleanedQuestion.trim();
+        }
+
+        // 计算相似度
+        function calculateSimilarity(text1, text2) {
+            const words1 = text1.toLowerCase().split(/[\s,，.。？?]+/).filter(word => word.length > 1);
+            const words2 = text2.toLowerCase().split(/[\s,，.。？?]+/).filter(word => word.length > 1);
+            
+            const intersection = words1.filter(word => words2.includes(word));
+            const union = [...new Set([...words1, ...words2])];
+            
+            return union.length > 0 ? intersection.length / union.length : 0;
+        }
+
+        // 检查连续文字匹配
+        function checkConsecutiveMatch(text1, text2, minLength = 5) {
+            // 检查text1中是否有至少minLength个连续字符出现在text2中
+            for (let i = 0; i <= text1.length - minLength; i++) {
+                const substring = text1.substring(i, i + minLength);
+                if (text2.includes(substring)) {
+                    return substring;
+                }
+            }
+            return null;
+        }
+
+        // 匹配短语模式
+        function matchPhrasePattern(question) {
+            if (phrasePatterns[question]) {
+                return phrasePatterns[question];
+            }
+            
+            for (const [pattern, segments] of Object.entries(phrasePatterns)) {
+                if (question.includes(pattern) || pattern.includes(question)) {
+                    return segments;
+                }
+            }
+            
+            return null;
+        }
+
+        // 扩展查询
+        function expandQuery(query) {
+            const expandedTerms = new Set();
+            
+            query.split(/[\s,，.。？?]+/).forEach(term => {
+                if (term.length > 1) expandedTerms.add(term);
+            });
+            
+            Object.keys(semanticMap).forEach(key => {
+                if (query.includes(key)) {
+                    semanticMap[key].forEach(synonym => {
+                        expandedTerms.add(synonym);
+                    });
+                }
+            });
+            
+            return Array.from(expandedTerms);
+        }
+
+        // 增强语义匹配 - 重点匹配step和keyPoints字段
+        function enhancedSemanticMatch(question, keywordQuery, expandedQuery) {
+            const questionType = detectQuestionType(question);
+            
+            const phraseMatchedSegments = matchPhrasePattern(question);
+            if (phraseMatchedSegments) {
+                return phraseMatchedSegments.map(segmentId => {
+                    const segment = videoSegments.find(s => s.id === segmentId);
+                    return {
+                        ...segment,
+                        score: 10,
+                        matchedKeywords: ["短语模式匹配"],
+                        questionType: questionType,
+                        matchMethod: "短语模式匹配"
+                    };
+                });
+            }
+            
+            const scoredSegments = videoSegments.map(segment => {
+                let score = 0;
+                let matchedKeywords = [];
+                let matchDetails = [];
+                
+                // 关键词匹配
+                expandedQuery.forEach(term => {
+                    if (segment.keywords.includes(term)) {
+                        score += 2;
+                        matchedKeywords.push(term);
+                        matchDetails.push(`关键词匹配: ${term}`);
+                    }
+                });
+                
+                // step字段匹配
+                if (segment.step) {
+                    const stepSimilarity = calculateSimilarity(keywordQuery, segment.step);
+                    score += stepSimilarity * 6; // 提高step字段权重
+                    if (stepSimilarity > 0) {
+                        matchDetails.push(`步骤匹配: ${(stepSimilarity * 100).toFixed(1)}%`);
+                    }
+                    
+                    // 检查step字段中的连续匹配
+                    const stepConsecutiveMatch = checkConsecutiveMatch(keywordQuery, segment.step, 5);
+                    if (stepConsecutiveMatch) {
+                        score += 4;
+                        matchDetails.push(`步骤连续匹配: "${stepConsecutiveMatch}"`);
+                    }
+                }
+                
+                // keyPoints字段匹配 - 重点匹配
+                if (segment.keyPoints) {
+                    const keyPointsSimilarity = calculateSimilarity(keywordQuery, segment.keyPoints);
+                    score += keyPointsSimilarity * 8; // 提高keyPoints字段权重
+                    if (keyPointsSimilarity > 0) {
+                        matchDetails.push(`关键点匹配: ${(keyPointsSimilarity * 100).toFixed(1)}%`);
+                    }
+                    
+                    // 检查keyPoints字段中的连续匹配（5个以上连续文字）
+                    const keyPointsConsecutiveMatch = checkConsecutiveMatch(keywordQuery, segment.keyPoints, 5);
+                    if (keyPointsConsecutiveMatch) {
+                        score += 5;
+                        matchDetails.push(`关键点连续匹配: "${keyPointsConsecutiveMatch}"`);
+                    }
+                }
+                
+                // 问题类型加分
+                if (questionType.isQuestion && matchedKeywords.length > 0) {
+                    score += 5;
+                }
+                
+                return {
+                    ...segment,
+                    score: score,
+                    matchedKeywords: [...new Set(matchedKeywords)],
+                    matchDetails: matchDetails,
+                    questionType: questionType,
+                    matchMethod: "语义理解匹配"
+                };
+            });
+            
+            return scoredSegments
+                .filter(segment => segment.score > 0.5)
+                .sort((a, b) => b.score - a.score);
+        }
+
+        // 模拟云端AI匹配
+        function simulateCloudAIMatch(question) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const keywordQuery = extractKeywords(question);
+                    const expandedQuery = expandQuery(keywordQuery);
+                    
+                    const matchedSegments = enhancedSemanticMatch(question, keywordQuery, expandedQuery);
+                    
+                    resolve({
+                        segments: matchedSegments,
+                        confidence: Math.min(0.95, 0.7 + matchedSegments.length * 0.1),
+                        method: "云端AI语义分析"
+                    });
+                }, 800);
+            });
+        }
+
+        // 搜索视频
+        async function searchVideo() {
+            const question = document.getElementById('question').value.trim();
+            const resultsContainer = document.getElementById('results');
+            const matchMethodElement = document.getElementById('match-method');
+            
+            if (!question) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-circle" style="font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; color: var(--secondary);"></i>
+                        <p>请输入您的问题</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            resultsContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>AI正在分析您的问题并匹配相关视频片段...</div>
+                </div>
+            `;
+            
+            let matchedSegments = [];
+            let matchMethod = "智能语义分析";
+            let confidence = 0;
+            
+            try {
+                const cloudResult = await simulateCloudAIMatch(question);
+                matchedSegments = cloudResult.segments;
+                confidence = cloudResult.confidence;
+                matchMethod = cloudResult.method;
+            } catch (error) {
+                console.error("云端AI匹配失败，使用本地匹配:", error);
+                const keywordQuery = extractKeywords(question);
+                const expandedQuery = expandQuery(keywordQuery);
+                matchedSegments = enhancedSemanticMatch(question, keywordQuery, expandedQuery);
+                confidence = Math.min(0.8, 0.5 + matchedSegments.length * 0.1);
+                matchMethod = "本地语义分析";
+            }
+            
+            matchMethodElement.textContent = matchMethod;
+            
+            if (matchedSegments.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; color: #666;"></i>
+                        <p>未找到相关视频片段，请尝试使用其他关键词</p>
+                        <p>例如：搭建装置、测量初始长度、记录数据、图像法、胡克定律等</p>
+                    </div>
+                `;
+            } else {
+                let resultsHTML = '';
+                matchedSegments.forEach(segment => {
+                    // 使用新函数创建视频链接
+                    const videoUrl = createBilibiliVideoUrl(segment);
+                    
+                    resultsHTML += `
+                        <div class="result-item">
+                            <div class="result-header">
+                                <h3>${segment.id} - ${getAdjustedTimeDisplay(segment)} 
+                                    ${segment.questionType.isQuestion ? `<span class="question-type">${segment.questionType.type}类问题</span>` : ''}
+                                </h3>
+                                <button class="play-button" onclick="playVideo(${JSON.stringify(segment).replace(/"/g, '&quot;')})">
+                                    <i class="fas fa-play-circle"></i> 播放片段
+                                </button>
+                            </div>
+                            <div class="result-content">
+                                <strong>步骤:</strong> ${segment.step}
+                            </div>
+                            <div class="result-content">
+                                <strong>内容与关键点:</strong> ${segment.keyPoints}
+                            </div>
+                            <div class="result-keywords">
+                                <strong>相关关键词:</strong>
+                                ${segment.keywords.map(keyword => 
+                                    `<span class="keyword ${segment.matchedKeywords && segment.matchedKeywords.includes(keyword) ? 'matched-keyword' : ''}">${keyword}</span>`
+                                ).join('')}
+                            </div>
+                            <div class="match-info">
+                                <strong>匹配详情:</strong>
+                                <div class="match-details">
+                                    匹配方法: ${segment.matchMethod || matchMethod}
+                                </div>
+                                ${segment.matchedKeywords && segment.matchedKeywords.length > 0 ? 
+                                    `<div class="match-details">
+                                        匹配关键词: ${segment.matchedKeywords.join(', ')}
+                                    </div>` : ''}
+                                ${segment.matchDetails && segment.matchDetails.length > 0 ? 
+                                    `<div class="match-details">
+                                        匹配详情: ${segment.matchDetails.join('; ')}
+                                    </div>` : ''}
+                                ${segment.questionType.isQuestion ? `<div class="match-details">问题类型: ${segment.questionType.type}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsHTML += `
+                    <div class="stats" style="justify-content: center; margin-top: 20px;">
+                        共找到 ${matchedSegments.length} 个相关片段 | 匹配置信度: ${(confidence * 100).toFixed(1)}% | 方法: ${matchMethod}
+                    </div>
+                `;
+                
+                resultsContainer.innerHTML = resultsHTML;
+                
+                const style = document.createElement('style');
+                style.textContent = `
+                    .matched-keyword {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        font-weight: bold;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // 添加回车键搜索功能
+        document.getElementById('question').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchVideo();
+            }
+        });
+        
+        // 点击模态框背景关闭视频
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideo();
+            }
+        });
+    </script>
+</body>
+</html>

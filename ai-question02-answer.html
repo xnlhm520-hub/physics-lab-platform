@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二中物理实验AI系统 - 验证机械能守恒定律</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 样式保持不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 12px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 22px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 50%;
+            left: 18px;
+            transform: translateY(-50%);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 10px 16px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            z-index: 100;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .back-home:hover {
+            transform: translateY(-50%) translateX(-5px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: clamp(1.6rem, 5vw, 2.5rem);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        .experiment-title {
+            color: var(--secondary);
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            padding: 0 8px;
+            line-height: 1.3;
+        }
+        
+        .experiment-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .search-section {
+            flex: 1;
+            min-width: min(100%, 320px);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 22px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .results-section {
+            flex: 2;
+            min-width: min(100%, 600px);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 22px;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .search-box {
+            margin-bottom: 22px;
+        }
+        
+        .search-box h2 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: clamp(1.2rem, 3.5vw, 1.5rem);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .search-button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            font-weight: bold;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 12px;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .search-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        }
+        
+        .ai-status {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            color: #666;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .ai-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+        
+        .ai-indicator .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #28a745;
+            margin-right: 4px;
+            animation: pulse 2s infinite;
+        }
+        
+        .example-questions {
+            margin-top: 22px;
+        }
+        
+        .example-questions h3 {
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+        }
+        
+        .example-list {
+            list-style-type: none;
+        }
+        
+        .example-list li {
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .example-list li:hover {
+            background: #e9ecef;
+        }
+        
+        .result-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px;
+            background: white;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .result-header h3 {
+            color: var(--primary);
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+        }
+        
+        .play-button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            text-decoration: none;
+            min-height: 36px;
+        }
+        
+        .play-button:hover {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+        }
+        
+        .result-content {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+        
+        .result-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .keyword {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            color: #555;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 18px;
+            color: #666;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .match-score {
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+        }
+        
+        .match-info {
+            background: #f8f9fa;
+            padding: 14px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+        
+        .match-details {
+            margin-top: 6px;
+            color: #555;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 18px;
+            color: white;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            font-weight: 500;
+        }
+        
+        .question-type {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            margin-left: 6px;
+        }
+        
+        .bilibili-notice {
+            background: linear-gradient(to right, #fff3cd, #ffeaa7);
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #fb7299;
+        }
+        
+        .bilibili-notice i {
+            color: #fb7299;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: clamp(25px, 6vw, 30px);
+            height: clamp(25px, 6vw, 30px);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 视频播放器样式 */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .close-video {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-frame {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 宽高比 */
+            position: relative;
+        }
+        
+        .video-frame iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 临时音量提示样式 */
+        .volume-notice {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .volume-notice.show {
+            opacity: 1;
+        }
+
+        /* 平板设备优化 */
+        @media (max-width: 1024px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 20px 16px;
+                margin-bottom: 20px;
+            }
+            
+            .main-content {
+                gap: 15px;
+            }
+        }
+        
+        /* 手机设备优化 */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+            }
+            
+            header {
+                padding: 18px 14px;
+                margin-bottom: 18px;
+                border-radius: 15px;
+                text-align: left;
+            }
+            
+            .back-home {
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                margin-bottom: 12px;
+                align-self: flex-start;
+                width: fit-content;
+            }
+            
+            h1 {
+                text-align: center;
+            }
+            
+            .experiment-title {
+                text-align: center;
+                width: 100%;
+            }
+            
+            .main-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-section, .results-section {
+                padding: 18px;
+                border-radius: 15px;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .play-button {
+                align-self: stretch;
+                justify-content: center;
+            }
+            
+            .volume-notice {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+        
+        /* 小屏手机优化 */
+        @media (max-width: 480px) {
+            body {
+                padding: 6px;
+            }
+            
+            header {
+                padding: 16px 12px;
+                border-radius: 12px;
+            }
+            
+            .search-section, .results-section {
+                padding: 16px;
+                border-radius: 12px;
+            }
+            
+            .example-list li {
+                padding: 10px 12px;
+            }
+            
+            .result-item {
+                padding: 16px;
+                border-radius: 10px;
+            }
+            
+            .bilibili-notice {
+                padding: 12px 16px;
+                border-radius: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="#" class="back-home" onclick="returnToHomepage()">
+                <i class="fas fa-home"></i> 返回主页
+            </a>
+            
+            <h1>二中物理实验AI系统</h1>
+            <div class="experiment-title">验证机械能守恒定律</div>
+        </header>
+        
+        <div class="main-content">
+            <section class="search-section">
+                <div class="search-box">
+                    <h2>请输入您的问题</h2>
+                    <input type="text" id="question" placeholder="例如：如何选择纸带？">
+                    <button class="search-button" onclick="searchVideo()">
+                        <i class="fas fa-search"></i> AI搜索视频片段
+                    </button>
+                    <div class="ai-status">
+                        <span class="ai-indicator"><span class="dot"></span>语义理解匹配</span>
+                        <span id="match-method">智能语义分析</span>
+                    </div>
+                </div>
+                
+                <div class="example-questions">
+                    <h3>常见问题示例</h3>
+                    <ul class="example-list">
+                        <li onclick="fillQuestion('如何选择纸带？')">如何选择纸带？</li>
+                        <li onclick="fillQuestion('本实验需要验证的等式？')">本实验需要验证的等式？</li>
+                        <li onclick="fillQuestion('怎样计算瞬时速度？')">怎样计算瞬时速度？</li>
+                        <li onclick="fillQuestion('是否需要测量重物的质量？')">是否需要测量重物的质量？</li>
+                        <li onclick="fillQuestion('如何搭建实验装置？')">如何搭建实验装置？</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="results-section">
+                <h2>搜索结果</h2>
+                
+                <div class="bilibili-notice">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>观看提示：</strong> 
+                        为获得最佳观看体验，使用该平台时建议登录B站，并关注本账号，第一时间获取高中物理真实的实验体验。电脑端视频默认为静音，请点击视频右下角音量按钮，解除静音。
+                    </div>
+                </div>
+                
+                <div id="results">
+                    <div class="no-results">
+                        <i class="fas fa-info-circle" style="font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; color: var(--primary);"></i>
+                        <p>请输入您关于实验的问题，AI将为您匹配相关视频片段</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <footer>
+            <p>西宁市第二中学科教中心 © 2025</p>
+        </footer>
+    </div>
+    
+    <!-- 视频播放器模态框 -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <button class="close-video" onclick="closeVideo()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="volume-notice" id="volumeNotice">
+                <i class="fas fa-volume-up"></i>
+                如果视频没有声音，请点击视频右下角的音量按钮
+            </div>
+            <div class="video-frame" id="videoFrame">
+                <!-- 视频将在这里动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 视频片段数据库 - 根据提供的表格数据结构
+        const videoSegments = [
+            {
+                id: "A-1",
+                time: "00:23",
+                step: "情景导入",
+                keyPoints: "通过汽车下坡的例子，描述动能增加和重力势能减少的现象，引出问题：增加的动能和减小的重力势能是否相等？机械能是否守恒？",
+                keywords: ["汽车下坡", "动能增加", "重力势能减小", "机械能守恒", "生活经验", "问题引入", "能量转化", "物理现象", "守恒条件", "理想模型", "动能定理", "势能转化", "实验背景", "引入问题"],
+                timeInSeconds: 23
+            },
+            {
+                id: "A-2",
+                time: "00:53",
+                step: "实验目的",
+                keyPoints: "屏幕展示或口播实验目的：'验证机械能守恒定律'。",
+                keywords: ["实验目的", "验证机械能守恒定律", "实验目标", "学习目标", "实验验证", "守恒定律", "能量守恒", "目的阐述", "实验核心", "定律证明"],
+                timeInSeconds: 53
+            },
+            {
+                id: "A-3",
+                time: "00:57",
+                step: "实验原理",
+                keyPoints: "解释原理：通过求出自由下落物体的重力势能减少量和相应过程中动能的增加量，若二者在误差允许范围内相等，则验证机械能守恒。",
+                keywords: ["实验原理", "重力势能减少量", "动能增加量", "误差允许", "机械能守恒", "自由落体", "原理阐述", "理论依据", "能量比较", "计算方法", "守恒判断", "自由下落运动", "重力做功", "能量测量", "判断守恒"],
+                timeInSeconds: 57
+            },
+            {
+                id: "A-4",
+                time: "01:18",
+                step: "清点器材",
+                keyPoints: "清点实验器材：铁架台、电火花计时器、纸带、重锤、毫米刻度尺。强调检查器材齐全，并举手示意老师。",
+                keywords: ["实验器材", "铁架台", "电火花计时器", "纸带", "重锤", "毫米刻度尺", "清点器材", "器材清单", "设备介绍", "实验工具", "打点计时器", "测量工具", "重物", "准备工作", "检查器材"],
+                timeInSeconds: 78
+            },
+            {
+                id: "B-1",
+                time: "01:41",
+                step: "搭建装置",
+                keyPoints: "将铁架台水平放置在桌面边缘，固定电火花计时器，连接电源。检查电火花计时器是否牢固，确保其平行于桌面、垂直于铁架台。",
+                keywords: ["搭建装置", "铁架台", "固定电火花计时器", "连接电源", "检查牢固", "对齐桌面", "装置安装", "实验设置", "设备固定", "电源连接", "垂直度", "稳定性", "操作规范", "安全要求"],
+                timeInSeconds: 101
+            },
+            {
+                id: "B-2",
+                time: "02:13",
+                step: "准备纸带和重锤",
+                keyPoints: "取80-100厘米纸带，处理卷曲（反向缠绕使其平整），将纸带穿过电火花计时器限位孔，下端连接重锤。轻托重锤，提拉纸带保持竖直。",
+                keywords: ["纸带处理", "穿过限位孔", "连接重锤", "提拉纸带", "保持竖直", "轻托重锤", "纸带安装", "限位孔使用", "重锤连接", "竖直状态", "纸带安装", "防止弯曲", "初始状态", "纸带弯曲"],
+                timeInSeconds: 133
+            },
+            {
+                id: "B-3",
+                time: "02:39",
+                step: "进行实验",
+                keyPoints: "打开电火花计时器电源，待打点稳定后释放纸带，重锤落地后取下纸带备用。强调释放时机和纸带获取。",
+                keywords: ["打开电源", "释放纸带", "获取纸带", "重锤落地", "打点稳定", "数据采集", "开始实验", "自由释放", "打点过程", "纸带获取", "操作时机", "实验记录", "第一次操作"],
+                timeInSeconds: 159
+            },
+            {
+                id: "B-4",
+                time: "02:50",
+                step: "重复实验",
+                keyPoints: "换上新纸带重复操作2次，共获取3条纸带。确保实验可重复性。",
+                keywords: ["重复实验", "多条纸带", "更换纸带", "数据重复", "三次实验", "更换新带", "提高可靠性", "避免偶然", "实验次数", "备份数据", "操作重复"],
+                timeInSeconds: 170
+            },
+            {
+                id: "B-5",
+                time: "02:55",
+                step: "选择纸带",
+                keyPoints: "从3条纸带中选择点迹清晰、起始两点间距离接近2mm的纸带，用于后续数据处理。",
+                keywords: ["选择纸带", "点迹清晰", "起始点距离", "2mm", "纸带筛选", "点迹质量", "初始间隔", "有效数据", "选择标准", "理想纸带", "数据处理前提", "纸带选择标准"],
+                timeInSeconds: 175
+            },
+            {
+                id: "C-1",
+                time: "03:04",
+                step: "标记计数点",
+                keyPoints: "在纸带起始点标'0'（初速度为0的点），每7-8个点取一个计数点，标数字1-7。",
+                keywords: ["标记计数点", "起始点0", "计数点", "标数字", "初速度为零", "分析纸带", "纸带分析方法", "如何分析纸带", "编号规则", "数据处理步骤", "纸带怎么分析", "点迹处理", "选择起始点"],
+                timeInSeconds: 184
+            },
+            {
+                id: "C-2",
+                time: "03:25",
+                step: "测量距离",
+                keyPoints: "测量各计数点到起始点0的距离，代表物体下落高度，填入表格。",
+                keywords: ["测量距离", "下落高度", "填表格", "计数点到起始点", "高度测量", "刻度尺使用", "数据记录", "距离读数", "高度数据", "表格填写", "原始数据", "测量操作"],
+                timeInSeconds: 205
+            },
+            {
+                id: "C-3",
+                time: "03:35",
+                step: "计算瞬时速度",
+                keyPoints: "使用匀变速直线运动原理：某点瞬时速度等于相邻两点平均速度。例如，点2速度 = (h3 - h1) / 0.04秒（单位转换为米/秒）。计算各点速度并填表。",
+                keywords: ["计算速度", "平均速度法", "瞬时速度", "匀变速直线运动", "填表格", "h3-h1", "时间0.04s", "速度求解", "中间时刻速度", "公式应用", "计算方法", "数据计算", "速度数据", "如何计算瞬时", "计算过程"],
+                timeInSeconds: 215
+            },
+            {
+                id: "C-4",
+                time: "04:20",
+                step: "计算动能和势能",
+                keyPoints: "用1/2 v²表示动能增加量，用gh表示重力势能减少量，本实验需要验证的等式（因公式均含质量m，可省略）。不需测量重物的质量。计算结果填入表格。",
+                keywords: ["动能增加量", "重力势能减少量", "1/2 v²", "gh", "计算", "填表格", "能量计算", "简化计算", "质量约去", "能量值", "结果比较", "计算步骤", "势能变化量", "动能变化量"],
+                timeInSeconds: 260
+            },
+            {
+                id: "C-5",
+                time: "04:42",
+                step: "分析数据",
+                keyPoints: "比较从起始点0到各点的动能增加量与重力势能减少量，看它们在误差允许范围内是否近似相等。",
+                keywords: ["分析数据", "比较", "误差允许", "近似相等", "动能增加量", "重力势能减少量", "数据对比", "结果分析", "误差范围", "守恒验证", "数值比较", "得出结论", "分析过程", "判断守恒"],
+                timeInSeconds: 282
+            },
+            {
+                id: "C-6",
+                time: "04:59",
+                step: "实验结论",
+                keyPoints: "总结：动能增加量与重力势能减少量在误差范围内近似相等，验证机械能守恒。讨论误差来源（如克服阻力做功）。",
+                keywords: ["实验结论", "验证机械能守恒", "误差", "克服阻力做功", "动能增加量略小", "结论总结", "定律成立", "误差分析", "阻力影响", "空气阻力", "系统误差", "结果讨论"],
+                timeInSeconds: 299
+            },
+            {
+                id: "C-7",
+                time: "05:14",
+                step: "整理仪器",
+                keyPoints: "实验结束，拆除实验装置，整理仪器，摆放整齐。",
+                keywords: ["整理仪器", "拆除装置", "实验结束", "器材整理", "恢复原状", "实验收尾", "清理现场", "归位摆放", "结束工作", "善后操作", "实验室规则"],
+                timeInSeconds: 314
+            }
+        ];
+
+        // 疑问词列表
+        const questionWords = ["如何", "怎样", "为什么", "是什么", "怎么", "何为", "为何", "怎么用", "如何使用", "怎样使用"];
+
+        // 语义映射表
+        const semanticMap = {
+            "选择纸带": ["选择纸带", "纸带筛选", "点迹清晰", "起始点距离", "2mm", "纸带选择标准", "有效数据", "理想纸带"],
+            "实验目的": ["实验目的", "验证机械能守恒定律", "实验目标", "学习目标", "实验验证", "守恒定律", "能量守恒", "目的阐述"],
+            "计算速度": ["计算速度", "平均速度法", "瞬时速度", "匀变速直线运动", "h3-h1", "时间0.04s", "速度求解", "中间时刻速度"],
+            "重复实验": ["重复实验", "多条纸带", "更换纸带", "数据重复", "三次实验", "提高可靠性", "避免偶然"],
+            "搭建装置": ["搭建装置", "铁架台", "固定电火花计时器", "连接电源", "装置安装", "实验设置", "设备固定"],
+            "实验原理": ["实验原理", "重力势能减少量", "动能增加量", "误差允许", "机械能守恒", "自由落体", "原理阐述"],
+            "器材": ["实验器材", "铁架台", "电火花计时器", "纸带", "重锤", "毫米刻度尺", "清点器材"],
+            "数据分析": ["分析数据", "比较", "误差允许", "近似相等", "动能增加量", "重力势能减少量", "数据对比"],
+            "实验结论": ["实验结论", "验证机械能守恒", "误差", "克服阻力做功", "动能增加量略小", "结论总结"],
+            "整理仪器": ["整理仪器", "拆除装置", "实验结束", "器材整理", "恢复原状", "实验收尾"]
+        };
+
+        // 短语模式匹配
+        const phrasePatterns = {
+            "如何选择纸带": ["B-5"],
+            "怎样选择纸带": ["B-5"],
+            "选择纸带": ["B-5"],
+            "如何搭建实验装置": ["B-1"],
+            "怎样搭建实验装置": ["B-1"],
+            "搭建实验装置": ["B-1"],
+            "实验目的是什么": ["A-2"],
+            "实验目的": ["A-2"],
+            "怎样计算瞬时速度": ["C-3"],
+            "如何计算瞬时速度": ["C-3"],
+            "计算瞬时速度": ["C-3"],
+            "为什么要重复实验": ["B-4"],
+            "重复实验": ["B-4"],
+            "实验原理是什么": ["A-3"],
+            "实验原理": ["A-3"],
+            "如何分析数据": ["C-5"],
+            "数据分析": ["C-5"],
+            "实验结论是什么": ["C-6"],
+            "实验结论": ["C-6"]
+        };
+
+        // 生成随机字符串函数，用于防止浏览器缓存
+        function generateRandomString() {
+            return Math.random().toString(36).substring(2, 15);
+        }
+
+        // 计算提前1秒后的时间显示
+        function getAdjustedTimeDisplay(segment) {
+            const adjustedSeconds = Math.max(0, segment.timeInSeconds - 1);
+            const minutes = Math.floor(adjustedSeconds / 60);
+            const seconds = adjustedSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // 创建B站视频链接函数 - 添加提前1秒功能
+        function createBilibiliVideoUrl(segment) {
+            // 生成随机参数防止缓存
+            const randomParam = generateRandomString();
+            
+            // 使用提前1秒的时间点，确保时间不小于0
+            const adjustedTime = Math.max(0, segment.timeInSeconds - 1);
+            
+            return `https://www.bilibili.com/video/BV1E61NB8Eyy?t=${adjustedTime}&high_quality=1&quality=80&muted=false&r=${randomParam}`;
+        }
+
+        // 创建嵌入视频URL函数 - 添加提前1秒功能
+        function createEmbedVideoUrl(segment) {
+            // 生成随机参数防止缓存
+            const randomParam = generateRandomString();
+            
+            // 使用提前1秒的时间点，确保时间不小于0
+            const adjustedTime = Math.max(0, segment.timeInSeconds - 1);
+            
+            return `https://player.bilibili.com/player.html?bvid=BV1E61NB8Eyy&page=1&high_quality=1&danmaku=0&t=${adjustedTime}&autoplay=1&r=${randomParam}`;
+        }
+
+        // 播放视频函数
+        function playVideo(segment) {
+            const videoModal = document.getElementById('videoModal');
+            const videoFrame = document.getElementById('videoFrame');
+            const volumeNotice = document.getElementById('volumeNotice');
+            
+            // 创建嵌入视频URL
+            const embedUrl = createEmbedVideoUrl(segment);
+            
+            // 设置嵌入视频
+            videoFrame.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
+            
+            // 显示视频模态框
+            videoModal.style.display = 'flex';
+            
+            // 短暂显示音量提示
+            showVolumeNotice();
+        }
+
+        // 显示音量提示（短暂显示后自动消失）
+        function showVolumeNotice() {
+            const notice = document.getElementById('volumeNotice');
+            notice.classList.add('show');
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                notice.classList.remove('show');
+            }, 3000);
+        }
+
+        // 关闭视频函数
+        function closeVideo() {
+            const videoModal = document.getElementById('videoModal');
+            const videoFrame = document.getElementById('videoFrame');
+            
+            // 隐藏视频模态框
+            videoModal.style.display = 'none';
+            
+            // 清空视频内容
+            videoFrame.innerHTML = '';
+        }
+
+        // 填充问题到输入框
+        function fillQuestion(question) {
+            document.getElementById('question').value = question;
+        }
+
+        // 返回主页
+        function returnToHomepage() {
+            window.location.href = './index.html';
+            return false;
+        }
+
+        // 检测问题类型
+        function detectQuestionType(question) {
+            for (const word of questionWords) {
+                if (question.includes(word)) {
+                    return { type: word, isQuestion: true };
+                }
+            }
+            return { type: "一般问题", isQuestion: false };
+        }
+
+        // 提取关键词
+        function extractKeywords(question) {
+            let cleanedQuestion = question;
+            for (const word of questionWords) {
+                cleanedQuestion = cleanedQuestion.replace(word, "");
+            }
+            return cleanedQuestion.trim();
+        }
+
+        // 计算相似度
+        function calculateSimilarity(text1, text2) {
+            const words1 = text1.toLowerCase().split(/[\s,，.。？?]+/).filter(word => word.length > 1);
+            const words2 = text2.toLowerCase().split(/[\s,，.。？?]+/).filter(word => word.length > 1);
+            
+            const intersection = words1.filter(word => words2.includes(word));
+            const union = [...new Set([...words1, ...words2])];
+            
+            return union.length > 0 ? intersection.length / union.length : 0;
+        }
+
+        // 检查连续文字匹配
+        function checkConsecutiveMatch(text1, text2, minLength = 5) {
+            // 检查text1中是否有至少minLength个连续字符出现在text2中
+            for (let i = 0; i <= text1.length - minLength; i++) {
+                const substring = text1.substring(i, i + minLength);
+                if (text2.includes(substring)) {
+                    return substring;
+                }
+            }
+            return null;
+        }
+
+        // 匹配短语模式
+        function matchPhrasePattern(question) {
+            if (phrasePatterns[question]) {
+                return phrasePatterns[question];
+            }
+            
+            for (const [pattern, segments] of Object.entries(phrasePatterns)) {
+                if (question.includes(pattern) || pattern.includes(question)) {
+                    return segments;
+                }
+            }
+            
+            return null;
+        }
+
+        // 扩展查询
+        function expandQuery(query) {
+            const expandedTerms = new Set();
+            
+            query.split(/[\s,，.。？?]+/).forEach(term => {
+                if (term.length > 1) expandedTerms.add(term);
+            });
+            
+            Object.keys(semanticMap).forEach(key => {
+                if (query.includes(key)) {
+                    semanticMap[key].forEach(synonym => {
+                        expandedTerms.add(synonym);
+                    });
+                }
+            });
+            
+            return Array.from(expandedTerms);
+        }
+
+        // 增强语义匹配 - 重点匹配step和keyPoints字段
+        function enhancedSemanticMatch(question, keywordQuery, expandedQuery) {
+            const questionType = detectQuestionType(question);
+            
+            const phraseMatchedSegments = matchPhrasePattern(question);
+            if (phraseMatchedSegments) {
+                return phraseMatchedSegments.map(segmentId => {
+                    const segment = videoSegments.find(s => s.id === segmentId);
+                    return {
+                        ...segment,
+                        score: 10,
+                        matchedKeywords: ["短语模式匹配"],
+                        questionType: questionType,
+                        matchMethod: "短语模式匹配"
+                    };
+                });
+            }
+            
+            const scoredSegments = videoSegments.map(segment => {
+                let score = 0;
+                let matchedKeywords = [];
+                let matchDetails = [];
+                
+                // 关键词匹配
+                expandedQuery.forEach(term => {
+                    if (segment.keywords.includes(term)) {
+                        score += 2;
+                        matchedKeywords.push(term);
+                        matchDetails.push(`关键词匹配: ${term}`);
+                    }
+                });
+                
+                // step字段匹配
+                if (segment.step) {
+                    const stepSimilarity = calculateSimilarity(keywordQuery, segment.step);
+                    score += stepSimilarity * 6; // 提高step字段权重
+                    if (stepSimilarity > 0) {
+                        matchDetails.push(`步骤匹配: ${(stepSimilarity * 100).toFixed(1)}%`);
+                    }
+                    
+                    // 检查step字段中的连续匹配
+                    const stepConsecutiveMatch = checkConsecutiveMatch(keywordQuery, segment.step, 5);
+                    if (stepConsecutiveMatch) {
+                        score += 4;
+                        matchDetails.push(`步骤连续匹配: "${stepConsecutiveMatch}"`);
+                    }
+                }
+                
+                // keyPoints字段匹配 - 重点匹配
+                if (segment.keyPoints) {
+                    const keyPointsSimilarity = calculateSimilarity(keywordQuery, segment.keyPoints);
+                    score += keyPointsSimilarity * 8; // 提高keyPoints字段权重
+                    if (keyPointsSimilarity > 0) {
+                        matchDetails.push(`关键点匹配: ${(keyPointsSimilarity * 100).toFixed(1)}%`);
+                    }
+                    
+                    // 检查keyPoints字段中的连续匹配（5个以上连续文字）
+                    const keyPointsConsecutiveMatch = checkConsecutiveMatch(keywordQuery, segment.keyPoints, 5);
+                    if (keyPointsConsecutiveMatch) {
+                        score += 5;
+                        matchDetails.push(`关键点连续匹配: "${keyPointsConsecutiveMatch}"`);
+                    }
+                }
+                
+                // 问题类型加分
+                if (questionType.isQuestion && matchedKeywords.length > 0) {
+                    score += 5;
+                }
+                
+                return {
+                    ...segment,
+                    score: score,
+                    matchedKeywords: [...new Set(matchedKeywords)],
+                    matchDetails: matchDetails,
+                    questionType: questionType,
+                    matchMethod: "语义理解匹配"
+                };
+            });
+            
+            return scoredSegments
+                .filter(segment => segment.score > 0.5)
+                .sort((a, b) => b.score - a.score);
+        }
+
+        // 模拟云端AI匹配
+        function simulateCloudAIMatch(question) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const keywordQuery = extractKeywords(question);
+                    const expandedQuery = expandQuery(keywordQuery);
+                    
+                    const matchedSegments = enhancedSemanticMatch(question, keywordQuery, expandedQuery);
+                    
+                    resolve({
+                        segments: matchedSegments,
+                        confidence: Math.min(0.95, 0.7 + matchedSegments.length * 0.1),
+                        method: "云端AI语义分析"
+                    });
+                }, 800);
+            });
+        }
+
+        // 搜索视频
+        async function searchVideo() {
+            const question = document.getElementById('question').value.trim();
+            const resultsContainer = document.getElementById('results');
+            const matchMethodElement = document.getElementById('match-method');
+            
+            if (!question) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-circle" style="font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; color: var(--secondary);"></i>
+                        <p>请输入您的问题</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            resultsContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>AI正在分析您的问题并匹配相关视频片段...</div>
+                </div>
+            `;
+            
+            let matchedSegments = [];
+            let matchMethod = "智能语义分析";
+            let confidence = 0;
+            
+            try {
+                const cloudResult = await simulateCloudAIMatch(question);
+                matchedSegments = cloudResult.segments;
+                confidence = cloudResult.confidence;
+                matchMethod = cloudResult.method;
+            } catch (error) {
+                console.error("云端AI匹配失败，使用本地匹配:", error);
+                const keywordQuery = extractKeywords(question);
+                const expandedQuery = expandQuery(keywordQuery);
+                matchedSegments = enhancedSemanticMatch(question, keywordQuery, expandedQuery);
+                confidence = Math.min(0.8, 0.5 + matchedSegments.length * 0.1);
+                matchMethod = "本地语义分析";
+            }
+            
+            matchMethodElement.textContent = matchMethod;
+            
+            if (matchedSegments.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="font-size: clamp(2rem, 8vw, 3rem); margin-bottom: 15px; color: #666;"></i>
+                        <p>未找到相关视频片段，请尝试使用其他关键词</p>
+                        <p>例如：选择纸带、实验目的、计算速度、搭建装置等</p>
+                    </div>
+                `;
+            } else {
+                let resultsHTML = '';
+                matchedSegments.forEach(segment => {
+                    // 使用新函数创建视频链接
+                    const videoUrl = createBilibiliVideoUrl(segment);
+                    
+                    resultsHTML += `
+                        <div class="result-item">
+                            <div class="result-header">
+                                <h3>${segment.id} - ${getAdjustedTimeDisplay(segment)} 
+                                    ${segment.questionType.isQuestion ? `<span class="question-type">${segment.questionType.type}类问题</span>` : ''}
+                                </h3>
+                                <button class="play-button" onclick="playVideo(${JSON.stringify(segment).replace(/"/g, '&quot;')})">
+                                    <i class="fas fa-play-circle"></i> 播放片段
+                                </button>
+                            </div>
+                            <div class="result-content">
+                                <strong>步骤:</strong> ${segment.step}
+                            </div>
+                            <div class="result-content">
+                                <strong>内容与关键点:</strong> ${segment.keyPoints}
+                            </div>
+                            <div class="result-keywords">
+                                <strong>相关关键词:</strong>
+                                ${segment.keywords.map(keyword => 
+                                    `<span class="keyword ${segment.matchedKeywords && segment.matchedKeywords.includes(keyword) ? 'matched-keyword' : ''}">${keyword}</span>`
+                                ).join('')}
+                            </div>
+                            <div class="match-info">
+                                <strong>匹配详情:</strong>
+                                <div class="match-details">
+                                    匹配方法: ${segment.matchMethod || matchMethod}
+                                </div>
+                                ${segment.matchedKeywords && segment.matchedKeywords.length > 0 ? 
+                                    `<div class="match-details">
+                                        匹配关键词: ${segment.matchedKeywords.join(', ')}
+                                    </div>` : ''}
+                                ${segment.matchDetails && segment.matchDetails.length > 0 ? 
+                                    `<div class="match-details">
+                                        匹配详情: ${segment.matchDetails.join('; ')}
+                                    </div>` : ''}
+                                ${segment.questionType.isQuestion ? `<div class="match-details">问题类型: ${segment.questionType.type}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsHTML += `
+                    <div class="stats" style="justify-content: center; margin-top: 20px;">
+                        共找到 ${matchedSegments.length} 个相关片段 | 匹配置信度: ${(confidence * 100).toFixed(1)}% | 方法: ${matchMethod}
+                    </div>
+                `;
+                
+                resultsContainer.innerHTML = resultsHTML;
+                
+                const style = document.createElement('style');
+                style.textContent = `
+                    .matched-keyword {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        font-weight: bold;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // 添加回车键搜索功能
+        document.getElementById('question').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchVideo();
+            }
+        });
+        
+        // 点击模态框背景关闭视频
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideo();
+            }
+        });
+    </script>
+</body>
+</html>
